@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vdosecshare/model/user_model.dart';
 import 'package:vdosecshare/screen/signInScreen.dart';
 import 'package:vdosecshare/tabs/Profile.dart';
 import 'package:vdosecshare/tabs/Shared.dart';
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  UserModel loggedInUser = UserModel();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,11 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          centerTitle: true,
           title: const Text(
             "Dashboard",
             style: TextStyle(
-                fontSize: 24, color: Colors.black, fontWeight: FontWeight.bold),
+                fontSize: 35, color: Colors.black, fontWeight: FontWeight.bold),
           ),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    logout(context);
+                  },
+                  icon: const Icon(Icons.logout)),
+            ]
         ),
         body: Stack(
           children: <Widget>[
@@ -45,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     textStyle: TextStyle(fontSize: 15),
-                    primary: Colors.white,
+                    primary: Colors.blue,
                     onPrimary: Colors.black,
                     shape: const CircleBorder(),
                     fixedSize: const Size(150, 150)),
@@ -56,11 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
                     print("Profile View");
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Profile()));
-                  });
                 },
               ),
             ),
@@ -70,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     textStyle: TextStyle(fontSize: 15),
-                    primary: Colors.white,
+                    primary: Colors.green,
                     onPrimary: Colors.black,
                     shape: const CircleBorder(),
                     fixedSize: const Size(150, 150)),
@@ -81,11 +89,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
                     print("Upload the Video");
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Upload()));
-                  });
                 },
               ),
             ),
@@ -95,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     textStyle: TextStyle(fontSize: 15),
-                    primary: Colors.white,
+                    primary: Colors.yellowAccent,
                     onPrimary: Colors.black,
                     shape: const CircleBorder(),
                     fixedSize: const Size(150, 150)),
@@ -106,11 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
                     print("Video list");
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Video_List()));
-                  });
                 },
               ),
             ),
@@ -120,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     textStyle: TextStyle(fontSize: 15),
-                    primary: Colors.white,
+                    primary: Colors.deepOrange,
                     onPrimary: Colors.black,
                     shape: const CircleBorder(),
                     fixedSize: const Size(150, 150)),
@@ -131,11 +135,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
                     print("Shared video");
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Shared()));
-                  });
                 },
               ),
             ),
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     primary: Colors.white,
                     onPrimary: Colors.black,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(80.0)),
+                        borderRadius: BorderRadius.circular(10.0)),
                     ),
                 child: Text(
                   "Log Out",
@@ -157,15 +159,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
-                    print("Sign Out");
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SigninScreen()));
-                  });
+                  logout(context);
                 },
               ),
             ),
           ],
         ));
+  }
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SigninScreen()));
   }
 }
